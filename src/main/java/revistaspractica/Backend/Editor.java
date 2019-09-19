@@ -1,9 +1,11 @@
 
 package revistaspractica.Backend;
+import javax.servlet.http.HttpServletRequest;
 
 public class Editor extends Usuario{
+    
 
-    public Editor() {
+    public Editor(HttpServletRequest request) {
         rango ="Editor";
     }
     

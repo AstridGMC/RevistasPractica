@@ -1,0 +1,86 @@
+#cuadro{
+    width: 650px;
+    height: 700px;
+    border: 5px solid #751E0C;
+    border-bottom: 10px solid #751E0C;
+    border-right: 10px solid #751E0C;
+    margin-top: 30px;
+    margin-left: 800px;
+    margin-right: 20px;
+    background-color: rgba(255, 255, 255,0.5);
+    border-radius: 10px;
+}
+
+#centro{
+    padding-top: 40px;
+    border-radius: 10px;
+    border-bottom: 5px solid #751E0C;
+    height: 2px;
+}
+
+#superior{
+    padding-left: 100px;
+    height: 50px;
+    width: 550px;
+    color: #000;
+    margin: 20px 20px 20px 20px;
+    border-bottom: 5px;
+}
+
+#titulo{
+    font-family: serif;
+    font-weight: bolder;
+    font-size: 45px;
+}
+#titulo2{
+    padding-left: 25px;
+    font-family: serif;
+    font-weight: bolder;
+    font-size: 30px;
+}
+
+#inferior{
+    font-size: 20px;
+    height: 300px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+}
+
+.form-control{
+    margin-left: 5px;
+    width: 450px;
+}
+
+#div1{
+    padding-top: 30px;
+}
+
+#div2{
+    padding-top: 30px;
+}
+#user{
+    width: 100px;
+    text-align: center;
+}
+
+#div3{
+    padding-top: 10px;
+}
+
+#usuario{
+    margin-top: 20px;
+}
+
+#div4{
+    padding-top: 10px;
+}
+
+
+#registrarse{
+    height:  50px;
+    margin-top: 10px;
+    margin-right: 90px;
+    width: 200px;
+    background-color: #751E0C;
+}

@@ -1,0 +1,67 @@
+body{
+    background-color: black;
+}
+
+#cuadro{
+    width: 600px;
+    border: 5px solid #c9302c;
+    border-bottom: 10px solid #c9302c;
+    border-right: 10px solid #c9302c;
+    margin: auto;
+    margin-top: 140px;
+    background-color: rgba(220,135,117,0.7);
+    border-radius: 10px;
+}
+
+#superior{
+    font-weight: bolder;
+    font-size: 22px;
+    height: 35px;
+    width: 550px;
+    color: #000;
+    margin: 20px 50px 20px 20px;
+}
+
+#inferior{
+    font-size: 15px;
+    height: 300px;
+    border-top: 5px solid #c9302c;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+}
+#div1{
+    font-size: 17px;
+    margin-top: 20px;
+    color: black;
+} 
+
+#div2{
+    font-size: 17px;
+    margin-top: 40px;
+    color: black;
+}
+
+#acceder{
+    font-size: 20px;
+    width: 100px;
+    background: #ac2925;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+#h4{
+    margin-left: 80px;
+    display: inline-block;
+    color:black;
+}
+
+#enlace1{
+    font-size: 22px;
+    font-weight: bolder;
+    color: #ac2925;
+}
+
+#registrarse{
+    border-top: 3px solid #c9302c;
+}

@@ -5,20 +5,17 @@ package revistasPractica.Conector;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Conection {
     private final String user = "root";
     private final String password = "Astrid.201731318";
     private final String host = "localhost";
     private final String port = "3306";
-    private final String database = "enviosPractica";
+    private final String database = "revistasPractica";
     private String classname= "com.mysql.jdbc.Driver";
     private String url = "jdbc:mysql://"+host+":"+port+"/"+database;
-    private final String stringConnection ="jdbc:mysql://localhost/enviosPractica";
-    private java.sql.Connection conexion;
-   
+    private final String stringConnection ="jdbc:mysql://localhost/revistasPractica";
+    private java.sql.Connection conexion  = null;
     
     public Conection() {
         conection();

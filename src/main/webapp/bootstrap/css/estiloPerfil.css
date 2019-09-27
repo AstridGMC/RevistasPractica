@@ -1,0 +1,61 @@
+body{
+    background-color: #f9f9f9;
+}
+file-preview-zone{
+    height: 200px;
+    width:200px;
+}
+.section{
+    border-bottom: 5px;
+    padding-top: 500px;
+    padding-left: 100px;
+}
+#seccion{
+    font-size: 50px;
+    text-align: center;
+    padding-top: 290px;
+}
+#fotobtn{
+    display: inline; 
+}
+
+.perfil{
+    margin-top: 50px;
+    margin-left: 200px;
+}
+#div1{
+    height:100px;
+    display: inline; 
+}
+.form-control{
+     background-color: #fff;
+    display: inline-block; 
+    font-size: 20px;
+    width: 800px;
+}
+.titulos{
+    display: inline; 
+    color: black;
+    font-size: 50px;
+}
+#editando{
+    color:white;
+    background-color: black;
+    padding-bottom: 10px;
+    display: inline-block; 
+    font-size: 50px;
+    font-size: 30px;
+}
+#guardar{
+    color:white;
+    background-color: black;
+    padding-bottom: 10px;
+    display: inline-block; 
+    font-size: 50px;
+    font-size: 30px;
+}
+.editar{
+    display: block; 
+    padding-left: 20px;
+    font-size: 50px;
+}

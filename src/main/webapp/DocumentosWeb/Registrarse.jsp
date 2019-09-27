@@ -22,57 +22,74 @@
 
             <div id = "centro"></div>
             <div id="inferior">
-                <form method ="POST" action ="iniciarSesion"  class="form-horizontal">
-                    <div class="form-group" id="div0">
+                <form method ="POST" action ="../Registrarse"  class="form-horizontal">
+                    <div class="form-group" class="form__field" id="div0">
                         <label class="col-sm-2 control-label" id="cui">CUI </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="cui" id="nombre" placeholder ="Numero de cui (13 digitos)">
+                            <input class="form__input" type="number"  pattern=".{13}" required  oninput="maxLengthCheck(this)"
+                                   maxlength="13" required name="cui" id="nombre" placeholder ="Numero de cui (13 digitos)">
+                            <span class="icon"></span>
                         </div>
                     </div>
                     <div class="form-group" id="div1">
                         <label class="col-sm-2 control-label" id="as">Nombres </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="nombres" id="nombre" placeholder ="Nombres completos">
+                            <input type="text" class="form__input" pattern=".{1,}" required name="nombre" id="nombre" placeholder ="Nombres completos">
+                            <span class="icon"></span>
                         </div>
                     </div>
                     <div class="form-group" id="div2">
                         <label class="col-sm-2 control-label">Apellidos </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="apellidos" id="apellidos" placeholder ="Apellidos completos">
+                            <input type="text" class="form__input" pattern=".{1,}"required name="apellido" id="apellidos" placeholder ="Apellidos completos">
+                            <span class="icon"></span>
                         </div>
                     </div>
                     <div class="form-group" id="div3">
                         <label id="user" class="col-sm-2 control-label">Nombre de Usuario</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="usuario" id="usuario" placeholder ="Nombre De Usuario">
+                            <input type="text"  class="form__input" pattern=".{1,}"required name="usuario" id ="usuario" placeholder ="Nombre De Usuario">
+                            <span class="icon"></span>
                         </div>
                     </div>
                     <div class="form-group" id="div4">
                         <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
                         <div class="col-sm-10" >
-                            <input type="password" name ="password" class="form-control" id="url" placeholder="Password">
+                            <input type="password" name ="password" class="form__input" pattern=".{1,}"required id="url" placeholder="Password">
+                            <span class="icon"></span>
                         </div>
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="rango" id="optionsRadios1" value="Editor" checked>
-                            Editor
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="rango" id="optionsRadios2" value="Suscriptor">
-                            Suscriptor
-                        </label>
-                    </div
+                    <div >
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="rango" id="optionsRadios1" value="Editor" checked>
+                                Editor
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="rango" id="optionsRadios2" value="Suscriptor">
+                                Suscriptor
+                            </label>
+                        </div
 
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <button type="submit" class="btn btn-success pull-right" id="registrarse">Registrarme</button>
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-success pull-right" id="registrarse">Registrarme</button>
+                            </div>
                         </div>
-                    </div>
                 </form>
             </div>
         </div>
     </body>
+
+    <script>
+        // This is an old version, for a more recent version look at
+        // https://jsfiddle.net/DRSDavidSoft/zb4ft1qq/2/
+        function maxLengthCheck(object)
+        {
+            if (object.value.length > object.maxLength)
+                object.value = object.value.slice(0, object.maxLength)
+        }
+    </script>
 </html>

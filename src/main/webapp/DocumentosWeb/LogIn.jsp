@@ -12,7 +12,7 @@
     <body background = "imagenes/fondo1.jpg">
 
         <div id="cuadro">
-            <% /*HttpSession sesion = request.getSession(); */%>
+            <% HttpSession sesion = request.getSession(); %>
             <div id="superior">
                 <h1>Iniciar Secion</h1>
             </div>
@@ -32,29 +32,29 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-10">
-                            <button type="submit" class="btn btn-success pull-right" id="acceder">Acceder</button>
+                            <button type="submit" name="acceder" class="btn btn-success pull-right" id="acceder">Acceder</button>
                         </div>
                     </div>
                 </form>
                 <div id="registrarse">
                     <h4 id="h4">Aun no estas registrado?</h4>
-                    <a id ="enlace1">registrarse</a>
+                    <a id ="enlace1" href="Registrarse.jsp" >registrarse</a>
                 </div>
             </div>
             <div id="wrapperbottom"></div>
-            <%/*
+            <%
                 String error = (String) sesion.getAttribute("error");
                 if (error != null) {
-                
-                <div style="border-color: red; color: white;"> 
-                <%=error//?%//>
-            </div>*/
             %>
-            
-            <%
-                /*
-                }*/
-            %>
+            <center>
+                <div style="font-size: 20px; color: white;"> 
+                    <%=error%>
+                </div>
+            </center>
+                <%
+                        session.setAttribute("error", null);
+                    }
+                %>
 
 
         </div>

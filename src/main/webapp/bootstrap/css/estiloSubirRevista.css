@@ -1,0 +1,32 @@
+#seccion{
+    
+    color:black;
+    font-size: 50px;
+    text-align: center;
+    padding-top: 290px;
+}
+.form-group{
+}
+.input-file {
+ font-size: 30px;
+}
+#div1{
+    padding: 30px;
+    height:100px;
+    display: inline; 
+}
+#div4{
+    display: inline; 
+}
+.fechas{
+    font-size:30px;
+}
+#precio{
+    font-size: 25px;
+}
+.form-control{
+    background-color: #fff;
+    display: inline-block; 
+    font-size: 20px;
+    width: 800px;
+}

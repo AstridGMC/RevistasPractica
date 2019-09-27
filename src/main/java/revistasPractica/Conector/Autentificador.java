@@ -1,6 +1,7 @@
 package revistasPractica.Conector;
 
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,20 +13,20 @@ public class Autentificador extends Conection {
 
    
 
-    public int ValidarRango(String usuario, String password) {
+    public int ValidarRango(Connection canexion, String usuario, String password) {
         PreparedStatement validarRango = null;
         ResultSet rs = null;
-        System.out.println(usuario + "ddd");
-        System.out.println(password + "dddss");
+        System.out.println(usuario);
+        System.out.println(password);
         try {
             String consulta1 = "SELECT rango FROM Usuario WHERE nombreUsuario= ? AND passwordUser= ?";
-            validarRango = getConexion().prepareStatement(consulta1);
+            validarRango = canexion.prepareStatement(consulta1);
             validarRango.setString(1, usuario);
             validarRango.setString(2, password);
             rs = validarRango.executeQuery();
-            rs.first();
+            System.out.println(rs.first());
             String rango = rs.getString(1);
-
+            System.out.println(rango);
             if ("Editor".equals(rango)) {
                 System.out.println(rango);
                 return 1;
@@ -39,7 +40,7 @@ public class Autentificador extends Conection {
         } catch (SQLException e) {
             System.out.println("rango nulo  " + e.getSQLState());
             return 0;
-        } finally {
+        } /*finally {
 
             try {
                 if (getConexion() != null) {
@@ -55,19 +56,19 @@ public class Autentificador extends Conection {
                 Logger.getLogger(Autentificador.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        }
+        }*/
 
         return 0;
     }
     
     
-    public boolean Registrar(String cui, String usuario , String password,String rango ,String nombre, String apellido){
+    public boolean Registrar(Connection canexion, String cui, String usuario , String password,String rango ,String nombre, String apellido){
         PreparedStatement ps1 =null;
         try{
             String consulta ="INSERT INTO Usuario (cuiUsuario, nombreUsuario, passwordUser, rango, nombres, apellidos)"
                 + " VALUES (?,?,?,?,?,?)";
             
-            ps1= getConexion().prepareStatement(consulta);
+            ps1= canexion.prepareStatement(consulta);
             ps1.setString(1, cui);
             ps1.setString(2, usuario);
             ps1.setString(3, password);

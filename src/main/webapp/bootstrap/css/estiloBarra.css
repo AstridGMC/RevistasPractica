@@ -1,0 +1,65 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+header {
+
+    background: rgba(0,0,0,0.9);
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+}
+div{
+    
+}
+nav {
+
+    float: left; /* Desplazamos el nav hacia la izquierda */
+}
+
+nav ul {
+    list-style: none;
+    overflow: hidden; /* Limpiamos errores de float */
+}
+
+nav ul li {
+    float: left;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+div{
+    display: block;
+}
+nav ul li a {
+    display: block; /* Convertimos los elementos a en elementos bloque para manipular el padding */
+    padding: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+h1{
+    font-size: 70px;
+    color: white;
+}
+nav ul li:hover {
+    background: #b92c28;
+}
+#div7{
+    display: inline-block;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    font-size: 30px;
+    color: white;
+    
+}
+
+#divIMG{
+    display: inline-block;
+    padding-top: 20px;
+    padding-left: 20px;
+     padding-right: 20px;
+}
+#contenedor{
+    height: 240px;
+    width: 100%;
+}

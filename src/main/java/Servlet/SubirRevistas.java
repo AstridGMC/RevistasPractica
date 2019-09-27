@@ -6,25 +6,27 @@
 package Servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import revistasPractica.Conector.Autentificador;
+import javax.servlet.http.Part;
 import revistasPractica.Conector.Conection;
-import revistaspractica.Backend.Editor;
-import revistaspractica.Backend.Usuario;
+import revistaspractica.Backend.Revista;
 
 /**
  *
  * @author astridmc
  */
-@WebServlet(name = "Registro", urlPatterns = {"/Registrarse"})
-public class Registro extends HttpServlet {
-
-    static String cui;
+@MultipartConfig
+@WebServlet(name = "SubirRevistas", urlPatterns = {"/SubirMisRevistas"})
+public class SubirRevistas extends HttpServlet {
+Conection conexion = new Conection();
+Revista revista = new Revista();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -34,32 +36,10 @@ public class Registro extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    Conection conexion = new Conection();
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        Usuario user = new Usuario(request);
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        user.setUsuario(request.getParameter("usuario"));
-        user.setPassword(request.getParameter("password"));
-        user.setNombre(request.getParameter("nombre"));
-        user.setApellido(request.getParameter("apellido"));
-        user.setCui(request.getParameter("cui"));
-        user.setRango(request.getParameter("rango"));
-        cui=request.getParameter("cui");
-        if (user.Registrar(conexion.getConexion()) != false) {
-            if ("Editor".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
-            }
-            if ("Suscriptor".equals(user.getRango())) {
-                request.getRequestDispatcher("DocumentosWeb/editarPerfil.jsp").forward(request, response);
-            }
-            if ("Administrador".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
-            }
-        }
+     
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -89,6 +69,44 @@ public class Registro extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+           String cui;
+        System.out.println(inicioSesion.cui);
+        String accion = request.getParameter("accion");
+        System.out.println(accion);
+        if ("GUARDAR".equals(accion)) {
+
+            switch (accion) {
+                case "GUARDAR":
+                    System.out.println(accion);
+                    Part part = request.getPart("fileDoc");
+                    InputStream inputStream = part.getInputStream();
+                    if (request.getSession().getAttribute("cui") != null) {
+                        cui = (String) request.getSession().getAttribute("cui");
+                        System.out.println(cui);
+                        revista.setCuiUsuario(cui);
+                        revista.setCuotaSuscripcion(Integer.parseInt(request.getParameter("precio")));
+                        revista.setDescripcion(request.getParameter("descripcion"));
+                        revista.setFecha(request.getParameter("fecha"));
+                        revista.setNombre(request.getParameter("nombreRevista"));
+                        revista.setPdf(inputStream);
+                        System.out.println(request.getParameter("fecha"));
+                        revista.SubirRevista(conexion.getConexion(),cui,response);
+                        request.getSession().setAttribute("error","el archivo se ha guardado con exito");
+                        response.sendRedirect("DocumentosWeb/subirRevista.jsp");
+                    } else if (request.getSession().getAttribute("cui") == null){
+                        cui = (String) getServletContext().getAttribute("cui");
+                        System.out.println(cui);
+                        request.getSession().setAttribute("error","error guardando la imagen");
+                        response.sendRedirect("DocumentosWeb/subirRevista.jsp");
+                    }
+                    break;
+                    
+                    
+                default:
+                    
+            }
+
+        }
     }
 
     /**

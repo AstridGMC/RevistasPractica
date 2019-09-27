@@ -76,6 +76,10 @@
     padding-top: 10px;
 }
 
+.radio{
+    padding-left: 100px;
+    align-items: center;
+}
 
 #registrarse{
     height:  50px;
@@ -83,4 +87,26 @@
     margin-right: 90px;
     width: 200px;
     background-color: #751E0C;
+}
+
+.form__input{
+    height: 35px;
+    font-size: 15px;
+    margin-left: 5px;
+    width: 450px;
+}
+.form__input:valid {
+  border-color: forestgreen;
+}
+
+.form__input:valid + .icon::after {
+  content: '✔️';
+}
+
+.form__input:invalid {
+  border-color: firebrick;
+}
+
+.form__input:invalid + .icon::after {
+  content: "❌";
 }

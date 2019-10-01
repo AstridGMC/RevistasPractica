@@ -7,26 +7,23 @@ package Servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import revistasPractica.Conector.Autentificador;
 import revistasPractica.Conector.Conection;
-import revistaspractica.Backend.Editor;
-import revistaspractica.Backend.Perfil;
+import revistaspractica.Backend.Revista;
 import revistaspractica.Backend.Usuario;
 
 /**
  *
  * @author astridmc
  */
-@WebServlet(name = "Registro", urlPatterns = {"/Registrarse"})
-public class Registro extends HttpServlet {
+@WebServlet(name = "verRevista", urlPatterns = {"/verRevistas"})
+public class verRevista extends HttpServlet {
 
-    static String cui;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,32 +33,8 @@ public class Registro extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    Conection conexion = new Conection();
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        Usuario user = new Usuario(request);
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        user.setUsuario(request.getParameter("usuario"));
-        user.setPassword(request.getParameter("password"));
-        user.setNombre(request.getParameter("nombre"));
-        user.setApellido(request.getParameter("apellido"));
-        user.setCui(request.getParameter("cui"));
-        user.setRango(request.getParameter("rango"));
-        cui = request.getParameter("cui");
-        if (user.Registrar(conexion.getConexion()) != false) {
-            if ("Editor".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
-            }
-            if ("Suscriptor".equals(user.getRango())) {
-                request.getRequestDispatcher("DocumentosWeb/editarPerfil.jsp").forward(request, response);
-            }
-            if ("Administrador".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
-            }
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,10 +46,33 @@ public class Registro extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    Conection conexion = new Conection();
+    Usuario user = new Usuario();
+    Revista revista = new Revista();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
+        String cui = (String)request.getSession().getAttribute("cui");
+        ArrayList<Revista> revistas;
+        if ("Editor".equals(request.getSession().getAttribute("rango"))) {
+            revistas = revista.ListarRevistasEditor(conexion.getConexion(), cui);
+            request.setAttribute("revistas", revistas);
+            request.setAttribute("titulo", "Mis Revistas Subidas");
+            getServletContext().getRequestDispatcher("/DocumentosWeb/verRevistas.jsp").forward(request, response);
+
+        } else if ("Suscriptor".equals(request.getSession().getAttribute("rango"))) {
+            if ("todasLasRevistas".equals(request.getParameter("mis revistas"))) {
+                revistas = revista.ListarRevistas(conexion.getConexion());
+                request.setAttribute("revistas", revistas);
+                request.setAttribute("titulo", "Todas las Revistas Disponibles");
+            } else if (request.getParameter("mis revistas").equals("misRevistas")) {
+                revistas = revista.ListarRevistas(conexion.getConexion());
+                request.setAttribute("revistas", revistas);
+                request.setAttribute("titulo", "Todas Mis Suscripciones Disponibles");
+            }
+            getServletContext().getRequestDispatcher("/DocumentosWeb/verRevistas.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -90,7 +86,10 @@ public class Registro extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String cuiEscritor = request.getParameter("cuiEscritor");
+        if(cuiEscritor!=null){
+            getServletContext().getRequestDispatcher("/Servlet/perfilVisita").forward(request, response);
+        }
     }
 
     /**

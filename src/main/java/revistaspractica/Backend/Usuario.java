@@ -13,7 +13,7 @@ import revistasPractica.Conector.Conection;
 
 public class Usuario {
     
-    protected  String nombre;
+    protected String nombre;
     protected String usuario;
     protected String rango;
     protected String password;
@@ -147,8 +147,26 @@ public class Usuario {
            return "rango nulo";
         }
     }
-    
-       public String ValidarNombre(Connection conexion){
+     public String ObtenerNombre(Connection conexion, String cui){
+        PreparedStatement validarNombre = null;
+        
+        System.out.println(usuario);
+        System.out.println(password);
+        try {
+            String consulta1 = "SELECT nombres , apellidos  FROM Usuario WHERE cuiUsuario= ?;";
+            validarNombre = conexion.prepareStatement(consulta1);
+            validarNombre.setString(1, cui);
+            ResultSet rs = validarNombre.executeQuery();
+            System.out.println(rs.first());
+            String miNombre = rs.getString("nombres");
+            String miApellido= rs.getString("apellidos");
+            return miNombre + " "+ miApellido;
+        } catch (SQLException e) {
+            System.out.println("nombre nulo " + e);
+            return null;
+        }
+    }
+    public String ValidarNombre(Connection conexion){
         PreparedStatement validarNombre = null;
         
         System.out.println(usuario);
@@ -198,10 +216,10 @@ public class Usuario {
             validarRango.setString(1, cui);
             ResultSet rs = validarRango.executeQuery();
             System.out.println(rs.first());
-            String minombre = rs.getString("nombre") +" "+ rs.getString("apellido");
+            String minombre = rs.getString("nombres") +" "+ rs.getString("apellidos");
             return minombre;
         } catch (SQLException e) {
-            System.out.println("nombre nulo " + e.getSQLState());
+            System.out.println("nombre nulo " + e);
             return null;
         }
     }

@@ -67,7 +67,12 @@ public class editarPerfil extends HttpServlet {
         miPerfil.VerPerfil(conexion.getConexion(), cui, miPerfil);
         System.out.println(miPerfil.getDescripcion());
         response.setContentType("text/*");
-        request.setAttribute("descripcion", miPerfil.getDescripcion());
+        
+        request.setAttribute("misGustos", miPerfil.getGustos());
+        request.setAttribute("miDescripcion", miPerfil.getDescripcion());
+        request.setAttribute("misIntereses", miPerfil.getIntereses());
+        request.setAttribute("misHobbies", miPerfil.getHobbies());
+        System.out.println(request.getAttribute("misIntereses"));
         getServletContext().getRequestDispatcher("/DocumentosWeb/editarPerfil.jsp").forward(request, response);
     }
 
@@ -101,7 +106,7 @@ public class editarPerfil extends HttpServlet {
                     miPerfil.setFoto(inputStream);
                     miPerfil.agregarImagen(miPerfil, conexion.getConexion());
                     request.getSession().setAttribute("error", "la imagen se ha guardado con exito");
-                    response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                    response.sendRedirect(request.getContextPath()+"/editarMiPerfil");
                 } else if (request.getSession().getAttribute("cui") == null) {
                     cui = (String) getServletContext().getAttribute("cui");
                     System.out.println(cui);
@@ -109,7 +114,7 @@ public class editarPerfil extends HttpServlet {
                     miPerfil.setFoto(inputStream);
                     miPerfil.agregarImagen(miPerfil, conexion.getConexion());
                     request.getSession().setAttribute("error", "error guardando la imagen");
-                    response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                    response.sendRedirect(request.getContextPath()+"/editarMiPerfil");
                 }
                 break;
             case "GUARDAR PERFIL":
@@ -125,10 +130,10 @@ public class editarPerfil extends HttpServlet {
                     miPerfil.setIntereses(request.getParameter("intereses"));
                     miPerfil.guardarPerfil(miPerfil, conexion.getConexion());
                     request.getSession().setAttribute("error", "su perfil ha sido actualizado");
-                    response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                    response.sendRedirect(request.getContextPath()+"/editarMiPerfil");
                 } else if (request.getSession().getAttribute("cui") == null) {
                     request.getSession().setAttribute("error", "error guardando la imagen");
-                    response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                    response.sendRedirect(request.getContextPath()+"/editarMiPerfil");
                 }
                 break;
             default:

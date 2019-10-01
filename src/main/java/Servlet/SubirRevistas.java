@@ -7,7 +7,7 @@ package Servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -54,7 +54,11 @@ Revista revista = new Revista();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Revista miRevista = new Revista();
+        ArrayList<String> categorias = miRevista.ListarCategorias(conexion.getConexion());
+        request.setAttribute("categorias", categorias);
+        getServletContext().getRequestDispatcher("/DocumentosWeb/subirRevista.jsp").forward(request, response);
+        
     }
 
     /**
@@ -91,12 +95,21 @@ Revista revista = new Revista();
                         revista.setPdf(inputStream);
                         System.out.println(request.getParameter("fecha"));
                         revista.SubirRevista(conexion.getConexion(),cui,response);
+                        if(request.getParameter("categoriaNueva").length()>1){
+                            System.out.println("categoria nueva");
+                          revista.guardarCategoria(conexion.getConexion(), request.getParameter("categoriaNueva"));
+                          revista.agregarCategoria(conexion.getConexion(),request.getParameter("nombreRevista"), request.getParameter("categoriaNueva"));
+                        }else{
+                            System.out.println("categoria elegir");
+                            System.out.println(request.getParameter("categoriaElegida"));
+                            revista.agregarCategoria(conexion.getConexion(),request.getParameter("nombreRevista"),request.getParameter("categoriaElegida"));
+                        }
                         request.getSession().setAttribute("error","el archivo se ha guardado con exito");
                         response.sendRedirect("DocumentosWeb/subirRevista.jsp");
                     } else if (request.getSession().getAttribute("cui") == null){
                         cui = (String) getServletContext().getAttribute("cui");
                         System.out.println(cui);
-                        request.getSession().setAttribute("error","error guardando la imagen");
+                        request.getSession().setAttribute("error",null);
                         response.sendRedirect("DocumentosWeb/subirRevista.jsp");
                     }
                     break;

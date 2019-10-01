@@ -4,6 +4,7 @@
     Author     : astridmc
 --%>
 
+<%@page import="revistasPractica.Conector.Conection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -43,9 +44,9 @@
                 <img  class="media-object" src="DocumentosWeb/imagenes/leer.jpg" alt="Mi imagen" width="300" height="220">
             </a>
             <div class="media-body">
-                <h2 class="media-heading">como Suscriptor</h2>
-                <h4>como Suscriptor podras tener acceso a cinetos de revistas mediante suscripciones mensuales el las cuales
-                    podras estar informado de tus temas de interes o simplemente distraerte mediante la lectura, ampleando tu conocimiento
+                <h2 class="media-heading">Como Suscriptor</h2>
+                <h4>Como Suscriptor podras tener acceso a varias revistas mediante suscripciones mensuales el las cuales
+                    podras estar informado de tus temas de interes o simplemente distraerte mediante la lectura, ampliando tu conocimiento
                     a la vez que pasas un buen rato.</h4>
             </div>
         </div>
@@ -54,7 +55,10 @@
                 <img  class="media-object" src="DocumentosWeb/imagenes/escribir1.jpg" alt="Mi imagen" width="300" height="220">
             </a>
             <div class="media-body">
-                <h4 class="media-heading">Título del contenido</h4>
+                <h2 class="media-heading">Como Escritor</h2>
+                <h4>Podras publicar tus revistas gratuitamente y generar ingresos a travez de ellas 
+                dando a conocer tu trabajo como escritor ante todos los suscriptores registrados en 
+                la pagina web</h4>
             </div>
         </div>
     </body>

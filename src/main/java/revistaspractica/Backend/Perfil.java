@@ -93,10 +93,11 @@ public class Perfil {
             rs = ps.executeQuery();
             rs.first();
             inputStream = rs.getBinaryStream("foto");
-            System.out.println("obteniendo imagen");
+           
             bufferedInputStream = new BufferedInputStream(inputStream);
             bufferedOutputStream = new BufferedOutputStream(outputStream);
             int i=0;
+             System.out.println("obteniendo imagen");
             while ((i = bufferedInputStream.read()) != -1) {
                 bufferedOutputStream.write(i);
             }
@@ -138,8 +139,8 @@ public class Perfil {
     }
     
     
-    public Perfil VerPerfil(Connection con, String cui, Perfil miPerfil){
-        String sql = "select * from Perfil where cuiUsuario= '" + cui + "';";
+    public Perfil VerPerfil(Connection con, String cui1, Perfil miPerfil){
+        String sql = "select * from Perfil where cuiUsuario= '" + cui1 + "';";
        
         
         try {
@@ -147,9 +148,10 @@ public class Perfil {
             rs = ps.executeQuery();
             rs.first();
             descripcion = rs.getString("descripcion");
-            hobbies = rs.getString("hobbies");
+            hobbies = rs.getString("hobbie");
             gustos= rs.getString("gustos");
             intereses= rs.getString("intereses");
+            cui =cui1;
             if(descripcion == null){
                 descripcion= "no has ingresado aun tu descripcion";
             }
@@ -158,6 +160,9 @@ public class Perfil {
             }
             if(intereses  == null){
                 intereses= "no has ingresado aun tus intereses";
+            }
+            if(gustos  == null){
+                intereses= "no has ingresado aun tus gustos";
             }
             return miPerfil;
         } catch (SQLException e) {

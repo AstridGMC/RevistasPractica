@@ -9,10 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
@@ -20,15 +18,33 @@ import javax.servlet.http.HttpServletResponse;
 public class Revista {
 
     private String revistaID;
-    private String CuiUsuario;
+    private String cuiUsuario;
+    private String escritor;
     private int cuotaSuscripcion;
     private String nombre;
     private String descripcion;
     private String fecha;
+    private String Categoria;
     private int likes;
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private InputStream pdf;
+
+    public String getEscritor() {
+        return escritor;
+    }
+
+    public void setEscritor(String escritor) {
+        this.escritor = escritor;
+    }
+
+    public String getCategoria() {
+        return Categoria;
+    }
+
+    public void setCategoria(String Categoria) {
+        this.Categoria = Categoria;
+    }
 
     public String getNombre() {
         return nombre;
@@ -58,8 +74,8 @@ public class Revista {
         return likes;
     }
 
-    public void setLinkes(int linkes) {
-        this.likes = linkes;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public InputStream getPdf() {
@@ -79,11 +95,11 @@ public class Revista {
     }
 
     public String getCuiUsuario() {
-        return CuiUsuario;
+        return cuiUsuario;
     }
 
-    public void setCuiUsuario(String CuiUsuario) {
-        this.CuiUsuario = CuiUsuario;
+    public void setCuiUsuario(String cuiUsuario) {
+        this.cuiUsuario = cuiUsuario;
     }
 
     public int getCuotaSuscripcion() {
@@ -104,7 +120,7 @@ public class Revista {
         try {
             //Date miFecha = dateFormat.parse(fecha);
             String consulta = "INSERT INTO Crea (cuotaSuscripcion, fecha, cuiUsuario)"
-                    + " VALUES (?,'"+fecha+"',?);";
+                    + " VALUES (?,'" + fecha + "',?);";
             String consulta2 = "INSERT INTO Revista (nombreRevista, DescripcionRevista, documento, cuiEditor) VALUES (?,?,?,?);";
             ps2 = conexion.prepareStatement(consulta2);
             ps2.setString(1, nombre);
@@ -113,9 +129,9 @@ public class Revista {
             ps2.setString(4, cui);
             ps1 = conexion.prepareStatement(consulta);
             ps1.setInt(1, cuotaSuscripcion);
-            ps1.setString(2, CuiUsuario);
-            
-            if ( ps2.executeUpdate()== 1) {
+            ps1.setString(2, cuiUsuario);
+
+            if (ps2.executeUpdate() == 1) {
                 uno = true;
                 System.out.println(uno);
                 if (uno == true) {
@@ -130,13 +146,41 @@ public class Revista {
 
     }
 
-    public String ObtenerId(Connection conexion, String cui) {
+    public String guardarCategoria(Connection conexion, String categoria) {
+        String consulta2 = "INSERT INTO CategoriaYEtiquetas (nombre, tipo) VALUES (?,?);";
+        try {
+            ps2 = conexion.prepareStatement(consulta2);
+            ps2.setString(1, categoria);
+            ps2.setString(2, "Categoria");
+            ps2.executeUpdate();
+            return "guardado";
+        } catch (SQLException ex) {
+            System.out.println("no se puede guardar categoria " + ex.getSQLState());
+            return "noGuardado";
+        }
+
+    }
+
+    public void agregarCategoria(Connection conexion, String nombreRevista, String nombreEtiqueta) {
+        String consulta2 = "INSERT INTO Tiene (nombre, idRevista) VALUES (?,?);";
+        try {
+            ps2 = conexion.prepareStatement(consulta2);
+            ps2.setString(1, nombreEtiqueta);
+            ps2.setString(2, ObtenerId(conexion, nombreRevista));
+            ps2.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("no se puede agregar categoria    " + ex);
+        }
+
+    }
+
+    public String ObtenerId(Connection conexion, String nombre) {
         PreparedStatement sql = null;
 
         try {
             String consulta1 = "SELECT idRevista FROM Revista WHERE nombreRevista= ?;";
             sql = conexion.prepareStatement(consulta1);
-            sql.setString(1, cui);
+            sql.setString(1, nombre);
             ResultSet rs = sql.executeQuery();
             System.out.println(rs.first());
             String idRevista = rs.getString(1);
@@ -148,6 +192,7 @@ public class Revista {
     }
 
     public void LeerRevista(Connection con, String cui, HttpServletResponse response) {
+        
         String idRevista = ObtenerId(con, cui);
         String sql = "select * from Revista where idRevista= " + idRevista + ";";
         InputStream inputStream = null;
@@ -175,7 +220,43 @@ public class Revista {
         }
     }
 
+    public ArrayList<Revista> ListarRevistasEditor(Connection con, String cui) {
+        Usuario user = new Usuario();
+        Revista miRevista;
+        ArrayList<Revista> list = new ArrayList<>();
+        String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista WHERE cuiUsuario = ?;";
+        try {
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, cui);
+            rs = ps1.executeQuery();
+            rs.first();
+            System.out.println("lololo" + user.obtenernombre(con, cui));
+            miRevista = new Revista();
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+            miRevista.setCuiUsuario(cui);
+            miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+            miRevista.setDescripcion(rs.getString("descripcionRevista"));
+            miRevista.setLikes(rs.getInt("likes"));
+            list.add(miRevista);
+            while (rs.next()) {
+                miRevista = new Revista();
+                miRevista.setNombre(rs.getString("nombreRevista"));
+                miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+                miRevista.setCuiUsuario(cui);
+                miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+                miRevista.setDescripcion(rs.getString("descripcionRevista"));
+                miRevista.setLikes(rs.getInt("likes"));
+                list.add(miRevista);
+            }
+        } catch (SQLException e) {
+            System.out.println("no se encontro revista " + e);
+        }
+        return list;
+    }
+
     public ArrayList<Revista> ListarRevistas(Connection con) {
+        Revista miRevista;
         Usuario user = new Usuario();
         ArrayList<Revista> list = new ArrayList<>();
         String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista";
@@ -183,43 +264,82 @@ public class Revista {
             ps1 = con.prepareStatement(sql);
             rs = ps1.executeQuery();
             rs.first();
-
+            miRevista = new Revista();
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setCuiUsuario( rs.getString("cuiUsuario"));
+            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+            miRevista.setDescripcion(rs.getString("descripcionRevista"));
+            miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+            miRevista.setLikes(rs.getInt("likes"));
+            list.add(miRevista);
             while (rs.next()) {
-                revistaID = rs.getString("idRevista");
-                CuiUsuario = user.obtenernombre(con, rs.getString("cuiUsuario"));
-                descripcion = rs.getString("descripcionRevista");
-                likes = rs.getInt("likes");
+                miRevista = new Revista();
+                miRevista.setNombre(rs.getString("nombreRevista"));
+                miRevista.setCuiUsuario( rs.getString("cuiUsuario"));
+                miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+                miRevista.setDescripcion(rs.getString("descripcionRevista"));
+                miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+                miRevista.setLikes(rs.getInt("likes"));
+                list.add(miRevista);
             }
         } catch (SQLException e) {
             System.out.println("no se encontro revista " + e);
         }
         return list;
     }
-    
-    public void obtenerIdRevista(){
-        
+
+    /*
+    public String obtenerIdRevista(String nombre, Connection con){
+         String sql = "SELECT idRevista FROM  Revistas WHERE nombreRevista = ?;";
+        try {
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, nombre);
+            rs = ps1.executeQuery();
+            rs.first();
+            return rs.getString("idRevista");
+        } catch (SQLException e) {
+            System.out.println("no se encontro revista " + e);
+            return null;
+        }
+    }*/
+
+    public ArrayList<String> ListarCategorias(Connection con) {
+        ArrayList<String> listaCategorias = new ArrayList<>();
+        String sql = "SELECT * FROM  CategoriaYEtiquetas WHERE tipo = 'Categoria';";
+        try {
+            ps1 = con.prepareStatement(sql);
+            rs = ps1.executeQuery();
+            rs.first();
+
+            while (rs.next()) {
+                listaCategorias.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            System.out.println("no se encontro revista " + e);
+        }
+        return listaCategorias;
     }
-    
-     public void Suscribir(Connection conexion, String cui, int idRevista,String fecha, int idSuscripcion){
-        PreparedStatement ps1 =null;
-        PreparedStatement ps2 =null;
-        boolean uno =false;
-        try{
-            String consulta ="INSERT INTO Suscribe (cuiUsuario, idRevista, fecha)"
-                + " VALUES (?,?,'"+ fecha+"');";
-            String consulta2 ="INSERT INTO Pagar (fecha, idSuscripcion, idRevista, cuiUsuario)"
-                + " VALUES ('"+fecha+"',?,?,?);";
-            ps1= conexion.prepareStatement(consulta);
+
+    public void Suscribir(Connection conexion, String cui, int idRevista, String fecha, int idSuscripcion) {
+        PreparedStatement ps1 = null;
+        PreparedStatement ps2 = null;
+        boolean uno = false;
+        try {
+            String consulta = "INSERT INTO Suscribe (cuiUsuario, idRevista, fecha)"
+                    + " VALUES (?,?,'" + fecha + "');";
+            String consulta2 = "INSERT INTO Pagar (fecha, idSuscripcion, idRevista, cuiUsuario)"
+                    + " VALUES ('" + fecha + "',?,?,?);";
+            ps1 = conexion.prepareStatement(consulta);
             ps1.setString(1, cui);
             ps1.setInt(2, idRevista);
             ps2.setInt(1, idSuscripcion);
             ps2.setInt(2, idSuscripcion);
-            if(ps1.executeUpdate()==1){
-                uno= true;
+            if (ps1.executeUpdate() == 1) {
+                uno = true;
                 System.out.println("guardado");
             }
-        }catch(SQLException e){
-            System.out.println("error " +e);
+        } catch (SQLException e) {
+            System.out.println("error " + e);
         }
     }
 }

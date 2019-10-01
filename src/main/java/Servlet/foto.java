@@ -7,24 +7,20 @@ package Servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import revistasPractica.Conector.Conection;
-import revistaspractica.Backend.Usuario;
+import revistaspractica.Backend.Perfil;
 
 /**
  *
  * @author astridmc
  */
-public class inicioSesion extends HttpServlet {
-
-    static Connection conexion = Conection.conection();
-    static Usuario user = new Usuario();
-    static String obtenercui = user.obtenerCUI(conexion);
-    static String cui = obtenercui;
+@WebServlet(name = "foto", urlPatterns = {"/foto"})
+public class foto extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,44 +31,10 @@ public class inicioSesion extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Usuario usuario = new Usuario(request);
-        cui = usuario.obtenerCUI(conexion);
-        if (usuario.ValidarNombre(conexion) != null) {
-
-            request.getSession().setAttribute("cui", usuario.obtenerCUI(conexion));
-            System.out.println(usuario.getNombre() + usuario.getApellido());
-            request.getSession().setAttribute("nombre", usuario.getUsuario());
-            System.out.println(usuario.obtenerCUI(conexion));
-            String mirango = usuario.validarRango(conexion);
-            request.getSession().setAttribute("rango", mirango);
-            if ("rango nulo".equals(mirango)) {
-                request.getSession().setAttribute("error", "contraseña incorrecta");
-                response.sendRedirect("DocumentosWeb/LogIn.jsp");
-            } else {
-                System.out.println(mirango);
-                if ("Editor".equals(mirango)) {
-                    System.out.println(mirango);
-                    request.getSession().setAttribute("nombreDelUsuario",usuario.ObtenerNombre(conexion, cui));
-                    response.sendRedirect("DocumentosWeb/InicioEditor.jsp");
-                } else if ("Suscriptor".equals(mirango)) {
-                    System.out.println(mirango);
-                    request.getSession().setAttribute("nombreDelUsuario",usuario.ObtenerNombre(conexion, cui));
-                    response.sendRedirect("DocumentosWeb/inicioSuscriptor.jsp");
-                } else if (mirango.equals("Administrador")) {
-                    System.out.println(mirango);
-                    response.sendRedirect("DocumentosWeb/inicio.jsp");
-                }
-                
-            }
-        } else {
-            response.sendRedirect("DocumentosWeb/LogIn.jsp");
-            request.getSession().setAttribute("error", "no existe un usuario registrado con ese nombre");
-        }
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -87,7 +49,11 @@ public class inicioSesion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Perfil perfil = new Perfil();
+           String cuiEscritor=(String) request.getParameter("cuiEscritor");
+           System.out.println("cui de obtener foto ddd"+ cuiEscritor);
+        perfil.obtenerFoto(Conection.conection(), cuiEscritor, response);
+        
     }
 
     /**

@@ -47,15 +47,16 @@ public class ManejadorSuscripcion {
     public boolean Suscribir(Connection conexion, String cui, int idRevista, String fecha) {
         PreparedStatement ps1 = null;
         PreparedStatement ps2 = null;
+        System.out.println(cui + "suscribir");
         boolean uno = false;
+        System.out.println(cui+ "cui");
         try {
             String consulta = "INSERT INTO Suscripcion(cuiUsuario, idRevista, fechaSuscripcion)"
                     + " VALUES (?,?,'" + fecha + "');";
-            ps1 = conexion.prepareStatement(consulta);
-            ps1.setString(1, cui);
-            ps1.setInt(2, idRevista);
-            if (ps1.executeUpdate() == 1) {
-                uno = true;
+            ps2 = conexion.prepareStatement(consulta);
+            ps2.setString(1, cui);
+            ps2.setInt(2, idRevista);
+            if (ps2.executeUpdate() == 1) {
                 if(Pagar( conexion, cui, idRevista, fecha, ObtenerIDSuscripcion(conexion, cui, idRevista))==true){
                     System.out.println("guardado");
                     return true;

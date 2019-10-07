@@ -42,7 +42,7 @@
                     <td name = "precio" > <%=revista.getCuotaSuscripcion()%> </td>
                     <td name = "suscribir" ><form action='<%=request.getContextPath()%>/CostosAdmin' method='POST'><div class="alert alert-success alert-dismissable">
                                 <input name='idRevista' value='<%=revista.getRevistaID()%>' style="display:none" >
-                                <input type="number" name='costo'><input type="submit"  value="Guardar"></div></form></td>
+                                <input type="text" name='costo'><input type="submit"  value="Guardar"></div></form></td>
                            
                    
                 </tr>

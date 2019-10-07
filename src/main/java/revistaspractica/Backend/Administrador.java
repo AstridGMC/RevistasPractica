@@ -249,4 +249,23 @@ public class Administrador extends Usuario {
         }
         return comentariosRevista;
     }
+    
+    public void AsignarCosto(Connection con, int idRevista, Double costoDia){
+        System.out.println(idRevista);
+        System.out.println(costoDia);
+        String sql="UPDATE Crea SET costoDia = ? WHERE idRevista= '"+idRevista+"';";
+        String sql2="UPDATE Crea SET Estado = Procesada WHERE idRevista= '"+idRevista+"';";
+        try {
+            ps1=con.prepareStatement(sql);
+            ps2=con.prepareStatement(sql2);
+            ps1.setDouble(1, idRevista);
+            ps1.executeUpdate();
+            ps2.executeUpdate();
+            
+            System.out.println("costo Guardada");
+        } catch (SQLException e) {
+            System.out.println("error No se ha guardado elCosto"+ e);
+        }
+    
+    }
 }

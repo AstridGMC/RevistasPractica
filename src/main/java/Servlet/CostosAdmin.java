@@ -55,6 +55,7 @@ public class CostosAdmin extends HttpServlet {
         System.out.println("preparando");
         ArrayList<Revista> revistasSinCosto = admin.RevistasSinCosto(conexion);
         request.setAttribute("revistasSinCosto", revistasSinCosto);
+
         getServletContext().getRequestDispatcher("/DocumentosWeb/asignarCostosRevistas.jsp").forward(request, response);
 
     }
@@ -71,9 +72,13 @@ public class CostosAdmin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Administrador admin = new Administrador();
-        Double costo =  Double.parseDouble(request.getParameter("costo"));
-        int idRevista= Integer.parseInt(request.getParameter("idRevista"));
-        
+        Double costo = Double.parseDouble(request.getParameter("costo"));
+        int idRevista = Integer.parseInt(request.getParameter("idRevista"));
+        ArrayList<Revista> revistasSinCosto = admin.RevistasSinCosto(conexion);
+        request.setAttribute("revistasSinCosto", revistasSinCosto);
+
+        admin.AsignarCosto(conexion, idRevista, costo);
+        getServletContext().getRequestDispatcher("/DocumentosWeb/asignarCostosRevistas.jsp").forward(request, response);
 
     }
 

@@ -14,7 +14,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href = "../bootstrap/css/estiloSubirRevista.css" rel="stylesheet" type ="text/css">
-        <title>JSP Page</title>
+        <title>Subir Reviata Nueva</title>
     </head>
     <body>
         <% //si ls respuesta de mi servlet es diferente a vacio

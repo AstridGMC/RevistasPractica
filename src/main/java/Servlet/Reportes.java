@@ -53,9 +53,6 @@ public class Reportes extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        Editor editor = new Editor();
-        String consulta = (String) request.getAttribute("consulta");
-        String cui = (String) request.getSession().getAttribute("cui");
        
     }
 
@@ -71,6 +68,56 @@ public class Reportes extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        String consulta = request.getParameter("consulta");
+        String fecha1= request.getParameter("fecha1");
+        String fecha2 = request.getParameter("fecha2");
+        request.setAttribute("fechas","del  "+ fecha1+"  al  "+fecha2 );
+        Editor editor = new Editor();
+        ArrayList<Revista> revistas ;
+        String cui = (String) request.getSession().getAttribute("cui");
+        if (consulta != null) {
+            System.out.println(consulta);
+            switch (consulta) {
+                case "Ganancias":
+                    request.setAttribute("consulta", "Ganancias");
+                    //revistas = editor.GananciasRevistas(conexion, cui);
+                    //getServletContext().getRequestDispatcher("DocumentosWeb/gananciasEditor.jsp").forward(request, response);
+                    //request.setAttribute("revista", revistas);
+                    break;
+                case "Comentarios":
+                    {
+                        String[] columnas = {"Revista", "Nombre Suscriptor", "Comentario"};
+                        request.setAttribute("columnas", columnas);
+                        request.setAttribute("consulta", "Comentarios");
+                        revistas = editor.ComentariosFecha(conexion, cui, fecha1, fecha2);
+                        request.setAttribute("revista", revistas);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
+                        break;
+                    }
+                case "Revistas Mas Gustadas":
+                    {
+                        String[] columnas = {"Revista", "Descripcion", "Likes"};
+                        request.setAttribute("columnas", columnas);
+                        request.setAttribute("consulta", "Revistas Mas Gustadas");
+                        revistas = editor.RevistaPopularFecha(conexion, cui, fecha1, fecha2);
+                        request.setAttribute("revista", revistas);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
+                        break;
+                    }
+                case "Suscripciones":
+                    {
+                        String[] columnas = {"Revista", "Nombre Suscriptor", "fecha"};
+                        request.setAttribute("columnas", columnas);
+                        request.setAttribute("consulta", "Suscripciones");
+                        revistas = editor.SuscripcionesEditorFecha(conexion, cui, fecha1, fecha2);
+                        request.setAttribute("revista", revistas);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
     }
 
     /**

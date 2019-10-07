@@ -85,7 +85,7 @@ public class Consultas extends HttpServlet {
                         request.setAttribute("consulta", "Comentarios");
                         revistas = editor.Comentarios(conexion, cui);
                         request.setAttribute("revista", revistas);
-                        getServletContext().getRequestDispatcher("/DocumentosWeb/gananciasEditor.jsp").forward(request, response);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
                         break;
                     }
                 case "Revistas Mas Gustadas":
@@ -94,18 +94,18 @@ public class Consultas extends HttpServlet {
                         request.setAttribute("columnas", columnas);
                         request.setAttribute("consulta", "Revistas Mas Gustadas");
                         revistas = editor.RevistaPopular(conexion, cui);
-                        //request.setAttribute("revista", revistas);
-                        //getServletContext().getRequestDispatcher("DocumentosWeb/gananciasEditor.jsp").forward(request, response);
+                        request.setAttribute("revista", revistas);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
                         break;
                     }
                 case "Suscripciones":
                     {
-                        String[] columnas = {"Revista", "Nombre Suscriptor", "fecha"};
+                        String[] columnas = {"Revista",  "Escritor", "Nombres Suscriptor"};
                         request.setAttribute("columnas", columnas);
                         request.setAttribute("consulta", "Suscripciones");
                         revistas = editor.SuscripcionesEditor(conexion, cui);
                         request.setAttribute("revista", revistas);
-                        getServletContext().getRequestDispatcher("/DocumentosWeb/gananciasEditor.jsp").forward(request, response);
+                        getServletContext().getRequestDispatcher("/DocumentosWeb/reportesEditor.jsp").forward(request, response);
                         break;
                     }
                 default:

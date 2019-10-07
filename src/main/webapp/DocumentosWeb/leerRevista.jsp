@@ -16,7 +16,7 @@
         <link href = "<%=request.getContextPath()%>/bootstrap/css/bootstrap.min.css" rel="stylesheet" type ="text/css">
         <link href = "<%=request.getContextPath()%>/bootstrap/css/estiloInicio.css" rel="stylesheet" type ="text/css">
         <link href = "<%=request.getContextPath()%>/bootstrap/css/estiloPerfil.css" rel="stylesheet" type ="text/css">
-        <title>JSP Page</title>
+        <title>leer Revista</title>
     </head>
     <body>
         <div style= "display: inline; padding: 10px; float: left; width: 100%; text-align: justify;">

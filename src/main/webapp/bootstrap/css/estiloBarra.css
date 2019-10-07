@@ -63,3 +63,6 @@ nav ul li:hover {
     height: 240px;
     width: 100%;
 }
+.dropdown-backdrop {
+  position: static;
+}

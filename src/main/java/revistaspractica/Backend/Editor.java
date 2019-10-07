@@ -41,6 +41,7 @@ public class Editor extends Usuario {
             return 0;
         }
     }
+    
 
     public ArrayList<Revista> RevistaPopular(Connection con, String cuiUsuario) {
         Revista miRevista;
@@ -58,32 +59,32 @@ public class Editor extends Usuario {
             miRevista.setCuiUsuario(rs.getString("cuiEditor"));
             miRevista.setNombre(rs.getString("nombreRevista"));
             miRevista.setRevistaID(rs.getInt("idRevista"));
+            miRevista.setDescripcion(rs.getString("descripcionRevista"));
             miRevista.setLikes(rs.getInt("likes"));
             miRevista.setFecha(rs.getDate("fecha").toString());
             suscripciones.add(miRevista);
-            int i=0;
-            while (rs.next()|| i<5) {
+            while (rs.next()) {
                 miRevista = new Revista();
                 miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
                 miRevista.setCuiUsuario(rs.getString("cuiEditor"));
                 miRevista.setNombre(rs.getString("nombreRevista"));
                 miRevista.setRevistaID(rs.getInt("idRevista"));
+                miRevista.setDescripcion(rs.getString("descripcionRevista"));
                 miRevista.setLikes(rs.getInt("likes"));
                 miRevista.setFecha(rs.getDate("fecha").toString());
                 suscripciones.add(miRevista);
-                i++;
             }
         } catch (SQLException e) {
             System.out.println("no se encontro comentarios de la revista " + e);
         }
         return suscripciones;
-
     }
-
-    public ArrayList<Revista> SuscripcionesEditor(Connection con, String cuiUsuario) {
+    
+    
+    public ArrayList<Revista> RevistaPopularFecha(Connection con, String cuiUsuario, String fecha1, String fecha2) {
         Revista miRevista;
         ArrayList<Revista> suscripciones = new ArrayList<>();
-        String sql = "SELECT * FROM  Suscripcion left JOIN Revista ON Suscripcion.idRevista = Revista.idRevista WHERE cuiEditor =?;";
+        String sql = "SELECT * FROM Revista JOIN Crea ON Revista.idRevista = Crea.idRevista WHERE Revista.cuiEditor=? AND Suscripcion.fechaSuscripcion BETWEEN'" + fecha1 + "' AND '" + fecha2 + "'ORDER BY likes DESC;";
         try {
 
             Usuario user = new Usuario();
@@ -92,21 +93,23 @@ public class Editor extends Usuario {
             rs = ps1.executeQuery();
             rs.first();
             miRevista = new Revista();
-            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
-            miRevista.setCuiUsuario(rs.getString("cuiUsuario"));
+            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+            miRevista.setCuiUsuario(rs.getString("cuiEditor"));
             miRevista.setNombre(rs.getString("nombreRevista"));
             miRevista.setRevistaID(rs.getInt("idRevista"));
-            miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
-            miRevista.setGanancia(ObtenerGananciaSuscripcion(con, rs.getInt("idRevista")));
+            miRevista.setLikes(rs.getInt("likes"));
+            miRevista.setDescripcion(rs.getString("descripcionRevista"));
+            miRevista.setFecha(rs.getDate("fecha").toString());
             suscripciones.add(miRevista);
-
             while (rs.next()) {
                 miRevista = new Revista();
-                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
-                miRevista.setCuiUsuario(rs.getString("cuiUsuario"));
+                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+                miRevista.setCuiUsuario(rs.getString("cuiEditor"));
                 miRevista.setNombre(rs.getString("nombreRevista"));
                 miRevista.setRevistaID(rs.getInt("idRevista"));
-                miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
+                miRevista.setDescripcion(rs.getString("descripcionRevista"));
+                miRevista.setLikes(rs.getInt("likes"));
+                miRevista.setFecha(rs.getDate("fecha").toString());
                 suscripciones.add(miRevista);
             }
         } catch (SQLException e) {
@@ -115,6 +118,82 @@ public class Editor extends Usuario {
         return suscripciones;
     }
 
+    public ArrayList<Revista> SuscripcionesEditor(Connection con, String cuiUsuario) {
+        Administrador admin= new Administrador();
+        Revista miRevista;
+        ArrayList<Revista> suscripciones = new ArrayList<>();
+        String sql = "SELECT * FROM  Suscripcion left JOIN Revista ON Suscripcion.idRevista = Revista.idRevista WHERE Revista.cuiEditor =?;";
+        try {
+
+            Usuario user = new Usuario();
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, cuiUsuario);
+            rs = ps1.executeQuery();
+            rs.first();
+            miRevista = new Revista();
+            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+            miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setRevistaID(rs.getInt("idRevista"));
+            miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
+            miRevista.setSuscriptores(admin.Suscriptores(con,rs.getInt("idRevista")));
+            suscripciones.add(miRevista);
+
+            while (rs.next()) {
+                miRevista = new Revista();
+                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+                miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+                miRevista.setNombre(rs.getString("nombreRevista"));
+                miRevista.setRevistaID(rs.getInt("idRevista"));
+                miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
+                miRevista.setSuscriptores(admin.Suscriptores(con,rs.getInt("idRevista")));
+                suscripciones.add(miRevista);
+            }
+        } catch (SQLException e) {
+            System.out.println("no se encontro comentarios de la revista " + e);
+        }
+        return suscripciones;
+    }
+
+    
+    public ArrayList<Revista> SuscripcionesEditorFecha(Connection con, String cuiUsuario, String fecha1, String fecha2) {
+        Administrador admin= new Administrador();
+        Revista miRevista;
+        ArrayList<Revista> suscripciones = new ArrayList<>();
+        String sql = "SELECT * FROM  Suscripcion left JOIN Revista ON Suscripcion.idRevista = Revista.idRevista WHERE Revista.cuiEditor =?  AND Suscripcion.fechaSuscripcion BETWEEN'" + fecha1 + "' AND '" + fecha2 + "';";
+        try {
+
+            Usuario user = new Usuario();
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, cuiUsuario);
+            rs = ps1.executeQuery();
+            rs.first();
+            miRevista = new Revista();
+            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+            miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setRevistaID(rs.getInt("idRevista"));
+            miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
+            miRevista.setSuscriptores(admin.Suscriptores(con,rs.getInt("idRevista")));
+            suscripciones.add(miRevista);
+
+            while (rs.next()) {
+                miRevista = new Revista();
+                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiEditor")));
+                miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+                miRevista.setNombre(rs.getString("nombreRevista"));
+                miRevista.setRevistaID(rs.getInt("idRevista"));
+                miRevista.setFecha(rs.getDate("fechaSuscripcion").toString());
+                miRevista.setSuscriptores(admin.Suscriptores(con,rs.getInt("idRevista")));
+                suscripciones.add(miRevista);
+            }
+        } catch (SQLException e) {
+            System.out.println("no se encontro comentarios de la revista " + e);
+        }
+        return suscripciones;
+    }
+    
+    
     public int costoPorDia(Connection con, String cuiUsuario) {
 
         String sql = "SELECT SUM(cuotaSuscripcion) as Costo FROM Crea WHERE cuiEditor=? AND idRevista";
@@ -167,6 +246,38 @@ public class Editor extends Usuario {
         Revista miRevista;
         ArrayList<Revista> comentariosRevista = new ArrayList<>();
         String sql = "SELECT * FROM  Comenta JOIN Revista ON Comenta.idRevista= Revista.idRevista WHERE cuiEditor=?;";
+        try {
+
+            Usuario user = new Usuario();
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, cuiUsuario);
+            rs = ps1.executeQuery();
+            rs.first();
+            miRevista = new Revista();
+            miRevista.setComentario(rs.getString("comentario"));
+            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setRevistaID(rs.getInt("idRevista"));
+            comentariosRevista.add(miRevista);
+
+            while (rs.next()) {
+                miRevista = new Revista();
+                miRevista.setComentario(rs.getString("comentario"));
+                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
+                miRevista.setNombre(rs.getString("nombreRevista"));
+                miRevista.setRevistaID(rs.getInt("idRevista"));
+                comentariosRevista.add(miRevista);
+            }
+        } catch (SQLException e) {
+            System.out.println("no se encontro comentarios de la revista " + e);
+        }
+        return comentariosRevista;
+    }
+    
+     public ArrayList<Revista> ComentariosFecha(Connection con, String cuiUsuario, String fecha1, String fecha2) {
+        Revista miRevista;
+        ArrayList<Revista> comentariosRevista = new ArrayList<>();
+        String sql = "SELECT * FROM  Comenta JOIN Revista ON Comenta.idRevista= Revista.idRevista WHERE cuiEditor=?  AND fechaComentario BETWEEN'" + fecha1 + "' AND '" + fecha2 + "';";
         try {
 
             Usuario user = new Usuario();

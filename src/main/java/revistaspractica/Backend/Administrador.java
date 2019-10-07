@@ -24,7 +24,6 @@ public class Administrador extends Usuario {
     ResultSet rs1 = null;
 
     public ArrayList<Revista> RevistasPopularesFecha(Connection con, String fecha1, String fecha2) {
-        System.out.println(fecha1 +"jjjjjjjj "+ fecha2);
         Revista miRevista;
         ArrayList<Revista> RevistasPopulares = new ArrayList<>();
         String sql = "SELECT idRevista, COUNT(2) numeroSuscripciones FROM Suscripcion WHERE fechaSuscripcion BETWEEN'" + fecha1 + "' AND '" + fecha2 + "'GROUP BY idRevista ORDER BY numeroSuscripciones DESC;";

@@ -254,7 +254,7 @@ public class Administrador extends Usuario {
         System.out.println(idRevista);
         System.out.println(costoDia);
         String sql="UPDATE Crea SET costoDia = ? WHERE idRevista= '"+idRevista+"';";
-        String sql2="UPDATE Crea SET Estado = Procesada WHERE idRevista= '"+idRevista+"';";
+        String sql2="UPDATE Crea SET Estado = 'Procesada' WHERE idRevista= '"+idRevista+"';";
         try {
             ps1=con.prepareStatement(sql);
             ps2=con.prepareStatement(sql2);

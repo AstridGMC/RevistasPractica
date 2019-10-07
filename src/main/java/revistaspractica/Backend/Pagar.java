@@ -14,6 +14,18 @@ import java.util.Date;
  * @author astridmc
  */
 public class Pagar {
+    
+    int CoboServicio = 10;
+
+    public int getCoboServicio() {
+        return CoboServicio;
+    }
+
+    public void setCoboServicio(int CoboServicio) {
+        this.CoboServicio = CoboServicio;
+    }
+    
+    
       /**
      * Método que formatea un afecha en base al formato pasado como
      * parámetro.

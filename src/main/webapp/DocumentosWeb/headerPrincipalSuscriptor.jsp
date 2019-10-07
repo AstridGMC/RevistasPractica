@@ -19,7 +19,7 @@
             <ul>
                 <li><a  href="<%=request.getContextPath()%>/DocumentosWeb/inicioSuscriptor.jsp">Inicio</a></li>
                 <li><a href="<%=request.getContextPath()%>/editarMiPerfil">Ver Mi Perfil</a></li>
-                <li><a name="mis revistas" value="todasLasRevistas" href="<%=request.getContextPath()%>/verRevistas?mis revistas=todasLasRevistas">Ver Revistas</a></li>
+                <li><a name="mis revistas" value="todasLasRevistas" href="<%=request.getContextPath()%>/verRevistas?mis revistas=todasLasRevistas">Buscar Revistas</a></li>
                 <li><a name="mis revistas" value="misRevistas" href="<%=request.getContextPath()%>/verRevistas?mis revistas=misRevistas">Ver mis Suscripciones</a></li>
                 <li><a href="#">Pagos</a></li>
                 <li><a href="#">Conusltas</a></li>

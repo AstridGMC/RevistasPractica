@@ -21,7 +21,8 @@ import revistaspractica.Backend.Usuario;
  */
 public class inicioSesion extends HttpServlet {
 
-    static Connection conexion = Conection.conection();
+    public static Conection miConexion = new Conection();
+    public static Connection conexion = miConexion.getConexion();
     static Usuario user = new Usuario();
     static String obtenercui = user.obtenerCUI(conexion);
     static String cui = obtenercui;
@@ -65,7 +66,8 @@ public class inicioSesion extends HttpServlet {
                     response.sendRedirect("DocumentosWeb/inicioSuscriptor.jsp");
                 } else if (mirango.equals("Administrador")) {
                     System.out.println(mirango);
-                    response.sendRedirect("DocumentosWeb/inicio.jsp");
+                    request.getSession().setAttribute("nombreDelUsuario",usuario.ObtenerNombre(conexion, cui));
+                    response.sendRedirect("DocumentosWeb/inicioAdministrador.jsp");
                 }
                 
             }

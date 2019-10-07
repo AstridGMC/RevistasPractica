@@ -24,10 +24,9 @@
         <%@include  file= "headerPrincipalEditor.jsp"%>
         <% } else if ("Suscriptor".equals(session.getAttribute("rango"))) {%>
         <%@include  file= "headerPrincipalSuscriptor.jsp"%>
-        <%            }
-            if (session.getAttribute("rango") == "Administrador") {
-
-            }%>
+        <%  } else if (session.getAttribute("rango").equals("Administrador")) {%>
+                <%@include  file= "headerAdministrador.jsp"%>
+            <%}%>
        
             
             <div  style=" align-content: center; padding-top: 350px; padding-left: 200px;"  id="seccion" class="contenido">

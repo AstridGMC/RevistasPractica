@@ -52,6 +52,7 @@ public class Controler extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("buscando la imagen");
         String cui=(String)request.getSession().getAttribute("cui");
+        
         System.out.println("cui de obtener foto "+ cui);
         perfil.obtenerFoto(coneccion.getConexion(), cui, response);
     }

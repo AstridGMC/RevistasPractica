@@ -4,6 +4,7 @@
     Author     : astridmc
 --%>
 
+<%@page import="revistaspractica.Backend.Revista"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,36 +13,62 @@
         <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
 
-        <title>JSP Page</title>
+        <title>Suscripcion</title>
     </head>
     <body>
-
         <div class="container"  id="myAlert">
-            <h2>Dismissal Alert Messages</h2>
-            <div class="alert alert-success alert-dismissable" id="myAlert2">
-                  <button id="botonWindowOpen">Abrir pop-up</button>
-            <button id="botonWindowClose">Cerrar pop-up</button>
+            <section>
+                <script>
 
+                    function alerta() {
+                        alert("Felicidades, la suscripcion se ha llevado a cabo satisfactoriamente");
+                    }
+
+                    function cerrar() {
+                        setTimeout(function () {
+                            window.close();
+                        }, 200); //Dejara un tiempo de 3 seg para que el usuario vea que se envio el formulario correctamente
+                    }
+                    if (<%=request.getAttribute("mensaje")%> === "Felicidades, la suscripcion se ha llevado a cabo satisfactoriamente") {
+                        window.close();
+                        <%request.setAttribute("mensaje", null);
+                        System.out.println("esta entrandi segundo");%>
+                    }
+                </script>
+
+                <div  style=" align-content: center; padding-top: 30px; padding-left: 30x;"  id="seccion" class="contenido">
+                    <%Revista revista = (Revista) request.getAttribute("revistaASuscribir");%>
+                    <div class="card" style="width: 50rem;">
+                        <form action="<%=request.getContextPath()%>/suscripcionNueva" method="POST" id="formulario">
+                            <div style="padding-top: 10px; padding-left: 100px;">
+                                <img src="<%=request.getContextPath()%><%=request.getAttribute("path")%> "  alt="Mi imagen" id="IMG" width="300" height="360">
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title"> <%=revista.getNombre()%> </h2>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Descripcion: <%=revista.getDescripcion()%></li>
+                                <li class="list-group-item">Escritor: <%=revista.getEscritor()%></li>
+                                <li class="list-group-item">PrecioSuscripcion:  Q.<%=revista.getCuotaSuscripcion()%>.00</li>
+                                <li class="list-group-item">Categoria: <%=revista.getCategoria()%></li>
+                            </ul>
+                            <div class="form-group" id="div1">
+                                <label class="titulos" id="as">Fecha de Suscripcion </label>
+                                <div class="col-sm-10">
+                                    <input class="fechas" type="date" name="miFecha" size="20" required>
+                                    <input type="text" name="idRevista" style="display: none;" value="<%=revista.getRevistaID()%>">
+
+                                </div>
+                            </div>
+                            <input onclick="alerta(); cerrar(); window.close();"  type="submit" name="accion" id="btnGuardar" value="SUSCRIBIR">
+                        </form>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+
+            </section>
         </div>
+
     </body>
-         <script>
-    //Variable que almacena el método window.open()
-    var miVentana;
-
-    //La función window_open crea el pop-up o ventana emergente
-    function window_open(){
-      miVentana = window.open( "../DocumentosWeb/LogIn.jsp", "nombrePop-Up", "width=700,height=700, top=40,left=50");
-    }
-    
-    //La función window_close cerrara el pop-up o ventana emergente
-    function window_close(){
-      miVentana.close();
-    }
-    
-    // Llamo a la función window_open en el evento click del botón con id = "botonWindowOpen"
-    document.getElementById("botonWindowOpen").onclick = function() {window_open()};
-
-    // Llamo a la función window_close en el evento click del botón con id = "botonWindowClose"
-    document.getElementById("botonWindowClose").onclick = function() {window_close()};
-  </script>
 </html>

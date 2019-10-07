@@ -52,7 +52,7 @@ public class foto extends HttpServlet {
         Perfil perfil = new Perfil();
            String cuiEscritor=(String) request.getParameter("cuiEscritor");
            System.out.println("cui de obtener foto ddd"+ cuiEscritor);
-        perfil.obtenerFoto(Conection.conection(), cuiEscritor, response);
+        perfil.obtenerFoto(inicioSesion.conexion, cuiEscritor, response);
         
     }
 

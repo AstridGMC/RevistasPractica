@@ -19,6 +19,7 @@ public class Usuario {
     protected String password;
     protected String cui;
     protected String apellido;
+    protected String fecha;
     
     public Usuario() {
         
@@ -40,6 +41,14 @@ public class Usuario {
 
     public void setUsuario(String usuario) {
         this.usuario = usuario;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 
     public String getPassword() {

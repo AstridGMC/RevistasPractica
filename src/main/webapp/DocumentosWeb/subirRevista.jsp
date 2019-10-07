@@ -129,12 +129,12 @@
         }
 
         function showContent() {
-            element = document.getElementById("nuevaCategoria");
+            elemento = document.getElementById("nuevaCategoria");
             check = document.getElementById("check");
             if (check.checked) {
-                element.style.display = 'inline';
+                elemento.style.display = 'inline';
             } else {
-                element.style.display = 'none';
+                elemento.style.display = 'none';
             }
         }
 

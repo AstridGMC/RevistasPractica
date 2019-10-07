@@ -36,7 +36,8 @@ public class Registro extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    Conection conexion = new Conection();
+    
+    public static Conection conexion = new Conection();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -53,13 +54,13 @@ public class Registro extends HttpServlet {
         cui = request.getParameter("cui");
         if (user.Registrar(conexion.getConexion()) != false) {
             if ("Editor".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                request.getRequestDispatcher("DocumentosWeb/inicioSesion.jsp").forward(request, response);
             }
             if ("Suscriptor".equals(user.getRango())) {
-                request.getRequestDispatcher("DocumentosWeb/editarPerfil.jsp").forward(request, response);
+                request.getRequestDispatcher("DocumentosWeb/inicioSesion.jsp").forward(request, response);
             }
             if ("Administrador".equals(user.getRango())) {
-                response.sendRedirect("DocumentosWeb/editarPerfil.jsp");
+                request.getRequestDispatcher("DocumentosWeb/inicioSesion.jsp").forward(request, response);;
             }
         }
     }

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Revista {
 
-    private String revistaID;
+    private int revistaID;
     private String cuiUsuario;
     private String escritor;
     private int cuotaSuscripcion;
@@ -25,10 +25,19 @@ public class Revista {
     private String descripcion;
     private String fecha;
     private String Categoria;
+    private String comentario;
+    private Double ganancia;
     private int likes;
+    private ArrayList<Usuario> suscriptores;
+    private ArrayList<String> comentarios;
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private InputStream pdf;
+
+    public Revista() {
+    }
+    
+    
 
     public String getEscritor() {
         return escritor;
@@ -46,6 +55,16 @@ public class Revista {
         this.Categoria = Categoria;
     }
 
+    public ArrayList<Usuario> getSuscriptores() {
+        return suscriptores;
+    }
+
+    public void setSuscriptores(ArrayList<Usuario> suscriptores) {
+        this.suscriptores = suscriptores;
+    }
+
+    
+    
     public String getNombre() {
         return nombre;
     }
@@ -86,11 +105,11 @@ public class Revista {
         this.pdf = pdf;
     }
 
-    public String getRevistaID() {
+    public int getRevistaID() {
         return revistaID;
     }
 
-    public void setRevistaID(String revistaID) {
+    public void setRevistaID(int revistaID) {
         this.revistaID = revistaID;
     }
 
@@ -110,16 +129,43 @@ public class Revista {
         this.cuotaSuscripcion = cuotaSuscripcion;
     }
 
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public Double getGanancia() {
+        return ganancia;
+    }
+
+    public void setGanancia(Double ganancia) {
+        this.ganancia = ganancia;
+    }
+
+    public ArrayList<String> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(ArrayList<String> comentarios) {
+        this.comentarios = comentarios;
+    }
+    
+    
+
     PreparedStatement ps1 = null;
     PreparedStatement ps2 = null;
     ResultSet rs = null;
+     ResultSet rs2 = null;
 
     public void SubirRevista(Connection conexion, String cui, HttpServletResponse response) {
 
         boolean uno = false;
         try {
             //Date miFecha = dateFormat.parse(fecha);
-            String consulta = "INSERT INTO Crea (cuotaSuscripcion, fecha, cuiUsuario)"
+            String consulta = "INSERT INTO Crea (cuotaSuscripcion, fecha, cuiEditor)"
                     + " VALUES (?,'" + fecha + "',?);";
             String consulta2 = "INSERT INTO Revista (nombreRevista, DescripcionRevista, documento, cuiEditor) VALUES (?,?,?,?);";
             ps2 = conexion.prepareStatement(consulta2);
@@ -191,15 +237,15 @@ public class Revista {
         }
     }
 
-    public void LeerRevista(Connection con, String cui, HttpServletResponse response) {
-        
-        String idRevista = ObtenerId(con, cui);
+    public void LeerRevista(Connection con, int idRevista, HttpServletResponse response) {
+
+        //String idRevista = ObtenerId(con, cui);
         String sql = "select * from Revista where idRevista= " + idRevista + ";";
         InputStream inputStream = null;
         OutputStream outputStream = null;
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
-        response.setContentType("document/*");
+        response.setContentType("application/pdf");
 
         try {
             outputStream = response.getOutputStream();
@@ -207,8 +253,7 @@ public class Revista {
             rs = ps1.executeQuery();
             rs.first();
             //rs.getBytes("revista");
-            inputStream = rs.getBinaryStream("revista");
-            System.out.println("obteniendo revista");
+            inputStream = rs.getBinaryStream("documento");
             bufferedInputStream = new BufferedInputStream(inputStream);
             bufferedOutputStream = new BufferedOutputStream(outputStream);
             int i = 0;
@@ -220,11 +265,36 @@ public class Revista {
         }
     }
 
+    public Revista detallarRevista(Connection con, int idRevista, Revista miRevista) {
+        Usuario user = new Usuario();
+        Categoria categoria = new Categoria();
+        String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista WHERE Revista.idRevista= ?;";
+
+        try {
+            ps1 = con.prepareStatement(sql);
+            ps1.setInt(1, idRevista);
+            rs = ps1.executeQuery();
+            rs.first();
+            miRevista.setNombre(rs.getString("nombreRevista"));
+            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiEditor")));
+            miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+            miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+            miRevista.setDescripcion(rs.getString("descripcionRevista"));
+            miRevista.setLikes(rs.getInt("likes"));
+            miRevista.setCategoria(categoria.ObtenerCategoria(con, idRevista));
+            miRevista.setRevistaID(idRevista);
+            return miRevista;
+        } catch (SQLException e) {
+            System.out.println("error leyendo revista" + e);
+            return null;
+        }
+    }
+
     public ArrayList<Revista> ListarRevistasEditor(Connection con, String cui) {
         Usuario user = new Usuario();
         Revista miRevista;
         ArrayList<Revista> list = new ArrayList<>();
-        String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista WHERE cuiUsuario = ?;";
+        String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista WHERE Revista.cuiEditor = ?;";
         try {
             ps1 = con.prepareStatement(sql);
             ps1.setString(1, cui);
@@ -232,21 +302,49 @@ public class Revista {
             rs.first();
             System.out.println("lololo" + user.obtenernombre(con, cui));
             miRevista = new Revista();
+
             miRevista.setNombre(rs.getString("nombreRevista"));
-            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiEditor")));
             miRevista.setCuiUsuario(cui);
             miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
             miRevista.setDescripcion(rs.getString("descripcionRevista"));
             miRevista.setLikes(rs.getInt("likes"));
             list.add(miRevista);
+
             while (rs.next()) {
+
                 miRevista = new Revista();
                 miRevista.setNombre(rs.getString("nombreRevista"));
-                miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
+                miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiEditor")));
                 miRevista.setCuiUsuario(cui);
                 miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
                 miRevista.setDescripcion(rs.getString("descripcionRevista"));
                 miRevista.setLikes(rs.getInt("likes"));
+                list.add(miRevista);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("no se encontro revista " + e);
+        }
+        return list;
+    }
+
+    public ArrayList<Revista> ListarRevistasSuscriptor(Connection con, String cui) {
+        Usuario user = new Usuario();
+        Revista miRevista;
+        ArrayList<Revista> list = new ArrayList<>();
+        String sql = "SELECT idRevista FROM Suscripcion WHERE cuiUsuario = ?";
+        try {
+            ps1 = con.prepareStatement(sql);
+            ps1.setString(1, cui);
+            rs2 = ps1.executeQuery();
+       
+            while (rs2.next()) {
+                System.out.println(rs2.getRow());
+                miRevista = new Revista();
+                miRevista = detallarRevista(con, rs2.getInt("idRevista"), miRevista);
+                miRevista.setRevistaID(rs.getInt("idRevista"));
+                System.out.println(rs2.getInt("idRevista"));
                 list.add(miRevista);
             }
         } catch (SQLException e) {
@@ -255,8 +353,9 @@ public class Revista {
         return list;
     }
 
-    public ArrayList<Revista> ListarRevistas(Connection con) {
+    public ArrayList<Revista> ListarRevistas(Connection con, String cui) {
         Revista miRevista;
+        Suscriptor suscriptor = new Suscriptor();
         Usuario user = new Usuario();
         ArrayList<Revista> list = new ArrayList<>();
         String sql = "SELECT * FROM Revista INNER JOIN Crea ON Revista.idRevista = Crea.idRevista";
@@ -264,23 +363,35 @@ public class Revista {
             ps1 = con.prepareStatement(sql);
             rs = ps1.executeQuery();
             rs.first();
-            miRevista = new Revista();
-            miRevista.setNombre(rs.getString("nombreRevista"));
-            miRevista.setCuiUsuario( rs.getString("cuiUsuario"));
-            miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
-            miRevista.setDescripcion(rs.getString("descripcionRevista"));
-            miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
-            miRevista.setLikes(rs.getInt("likes"));
-            list.add(miRevista);
-            while (rs.next()) {
+            if ("Procesada".equals(rs.getString("estado"))) {
                 miRevista = new Revista();
-                miRevista.setNombre(rs.getString("nombreRevista"));
-                miRevista.setCuiUsuario( rs.getString("cuiUsuario"));
-                miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiUsuario")));
-                miRevista.setDescripcion(rs.getString("descripcionRevista"));
-                miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
-                miRevista.setLikes(rs.getInt("likes"));
-                list.add(miRevista);
+                miRevista.setRevistaID(rs.getInt("idRevista"));
+                if (suscriptor.verificarSuscripcion(con, cui, miRevista)==true) {
+                    miRevista.setNombre(rs.getString("nombreRevista"));
+                    miRevista.setRevistaID(rs.getInt("idRevista"));
+                    miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+                    miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiEditor")));
+                    miRevista.setDescripcion(rs.getString("descripcionRevista"));
+                    miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+                    miRevista.setLikes(rs.getInt("likes"));
+                    list.add(miRevista);
+                }
+            }
+            while (rs.next()) {
+                if ("Procesada".equals(rs.getString("estado"))) {
+                    miRevista = new Revista();
+                    miRevista.setRevistaID(rs.getInt("idRevista"));
+                    if (suscriptor.verificarSuscripcion(con, cui, miRevista)==true) {
+                        
+                        miRevista.setNombre(rs.getString("nombreRevista"));
+                        miRevista.setCuiUsuario(rs.getString("cuiEditor"));
+                        miRevista.setEscritor(user.obtenernombre(con, rs.getString("cuiEditor")));
+                        miRevista.setDescripcion(rs.getString("descripcionRevista"));
+                        miRevista.setCuotaSuscripcion(rs.getInt("cuotaSuscripcion"));
+                        miRevista.setLikes(rs.getInt("likes"));
+                        list.add(miRevista);
+                    }
+                }
             }
         } catch (SQLException e) {
             System.out.println("no se encontro revista " + e);
@@ -302,7 +413,6 @@ public class Revista {
             return null;
         }
     }*/
-
     public ArrayList<String> ListarCategorias(Connection con) {
         ArrayList<String> listaCategorias = new ArrayList<>();
         String sql = "SELECT * FROM  CategoriaYEtiquetas WHERE tipo = 'Categoria';";
@@ -310,7 +420,7 @@ public class Revista {
             ps1 = con.prepareStatement(sql);
             rs = ps1.executeQuery();
             rs.first();
-
+            listaCategorias.add(rs.getString("nombre"));
             while (rs.next()) {
                 listaCategorias.add(rs.getString("nombre"));
             }
@@ -320,26 +430,47 @@ public class Revista {
         return listaCategorias;
     }
 
-    public void Suscribir(Connection conexion, String cui, int idRevista, String fecha, int idSuscripcion) {
-        PreparedStatement ps1 = null;
-        PreparedStatement ps2 = null;
-        boolean uno = false;
+    public ArrayList<Revista> LeerComentarios(Connection con, int idRevista) {
+        Revista miRevista;
+        ArrayList<Revista> comentariosRevista = new ArrayList<>();
+        String sql = "SELECT * FROM  Comenta WHERE idRevista = ?;";
         try {
-            String consulta = "INSERT INTO Suscribe (cuiUsuario, idRevista, fecha)"
-                    + " VALUES (?,?,'" + fecha + "');";
-            String consulta2 = "INSERT INTO Pagar (fecha, idSuscripcion, idRevista, cuiUsuario)"
-                    + " VALUES ('" + fecha + "',?,?,?);";
-            ps1 = conexion.prepareStatement(consulta);
-            ps1.setString(1, cui);
-            ps1.setInt(2, idRevista);
-            ps2.setInt(1, idSuscripcion);
-            ps2.setInt(2, idSuscripcion);
-            if (ps1.executeUpdate() == 1) {
-                uno = true;
-                System.out.println("guardado");
+
+            Usuario user = new Usuario();
+            ps1 = con.prepareStatement(sql);
+            ps1.setInt(1, idRevista);
+            rs = ps1.executeQuery();
+            rs.first();
+            miRevista = new Revista();
+            miRevista.setComentario(rs.getString("comentario"));
+            miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
+            miRevista.setRevistaID(idRevista);
+            comentariosRevista.add(miRevista);
+
+            while (rs.next()) {
+                miRevista = new Revista();
+                miRevista.setComentario(rs.getString("comentario"));
+                miRevista.setEscritor(user.ObtenerNombre(con, rs.getString("cuiUsuario")));
+                miRevista.setRevistaID(idRevista);
+                comentariosRevista.add(miRevista);
             }
         } catch (SQLException e) {
-            System.out.println("error " + e);
+            System.out.println("no se encontro revista " + e);
+        }
+        return comentariosRevista;
+    }
+
+    public void ComentarRevista(Connection con, String cui, String comentario, int idRevista) {
+        String consulta1 = "INSERT INTO Comenta (cuiUsuario, comentario, idRevista) VALUES (?,?,?);";
+        try {
+            ps2 = con.prepareStatement(consulta1);
+            ps2.setString(1, cui);
+            ps2.setString(2, comentario);
+            ps2.setInt(3, idRevista);
+            ps2.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("no se puede agregar comentario" + ex);
         }
     }
+
 }

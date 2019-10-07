@@ -13,7 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href = "<%=request.getContextPath()%>/bootstrap/css/bootstrap.min.css" rel="stylesheet" type ="text/css">
-        <title>JSP Page</title>
+        <title>Revistas</title>
     </head>
     <body>
         <%
@@ -23,10 +23,7 @@
         <%@include  file= "headerPrincipalEditor.jsp"%>
         <% } else if ("Suscriptor".equals(session.getAttribute("rango"))) {%>
         <%@include  file= "headerPrincipalSuscriptor.jsp"%>
-        <%            }
-            if (session.getAttribute("rango") == "Administrador") {
-
-            }%>
+        <%}%>
         <div style="padding-top: 320px;">
             <table action="../SubirMisRevistas" method="POST" class="table">
                 <thead>
@@ -42,9 +39,13 @@
                 </thead>
 
                 <%
+                    
                     ArrayList<Revista> revistas = (ArrayList) request.getAttribute("revistas");
+                    System.out.println(revistas.size());
                     for (int i = 0; i < revistas.size(); i++) {
                         Revista revista = revistas.get(i);
+                        int idRevista = revista.getRevistaID();
+                        System.out.println(revista.getRevistaID() + "kkk");
                 %>
                 <tr> 
 
@@ -52,28 +53,14 @@
                     <td name = "escritor" > <a href="<%=request.getContextPath()%>/perfilVista?cuiEscritor=<%=revista.getCuiUsuario()%>"><%=revista.getEscritor()%> </a></td>
                     <td name = "precio" > <%=revista.getCuotaSuscripcion()%> </td>
                     <td name = "descripcion" > <%=revista.getDescripcion()%> </td>
-                    <%if ("Suscriptor".equals(session.getAttribute("rango"))) {%>
-                    <td name = "suscribir" ><div class="alert alert-success alert-dismissable" id="myAlert2"><input type="button" id="botonWindowOpen" onClick="window_open();"value="SUSCRIBIR"></div></td>
-                        <%}
-                        %>
-
+                    <%if ("Suscriptor".equals(session.getAttribute("rango")) && request.getAttribute("suscrito") == "no") {%>
+                    <td name = "suscribir" ><div class="alert alert-success alert-dismissable" id="myAlert2"><input type="button" id="botonWindowOpen" onClick= 'window.open("<%=request.getContextPath()%>/suscripcionNueva?suscripcion=<%=revista.getRevistaID()%>", "MsgWindow", "width=550, height=700, top=100,left=500");'  value="SUSCRIBIR"></div></td>
+                            <%} else if (request.getAttribute("suscrito") == "si") {%>
+                    <td name = "suscribir" ><div class="alert alert-success alert-dismissable" id="myAlert2"><input type="button" id="botonWindowOpen" onClick= 'window.open("<%=request.getContextPath()%>/LecturaRevista?lectura=<%=revista.getRevistaID()%>", "MsgWindow", "width=550, height=700, top=100,left=500");'  value="LEER"></div></td>
+                            <%}%>
                 </tr>
                 <%}%>
-                <script>
-                    var miVentana;
 
-                    //La función window_open crea el pop-up o ventana emergente
-                    function window_open() {
-                        miVentana = window.open("DocumentosWeb/LogIn.jsp", "nombrePop-Up", "width=700,height=700, top=40,left=50");
-                    }
-
-                    //La función window_close cerrara el pop-up o ventana emergente
-                    function window_close() {
-                        miVentana.close();
-                    }
-
-                    
-                </script>
 
 
             </table>

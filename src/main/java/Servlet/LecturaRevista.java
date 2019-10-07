@@ -8,21 +8,21 @@ package Servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import revistasPractica.Conector.Conection;
-import revistaspractica.Backend.Perfil;
-import revistaspractica.Backend.Usuario;
+import revistaspractica.Backend.Revista;
 
 /**
  *
  * @author astridmc
  */
-@WebServlet(name = "perfilVista", urlPatterns = {"/perfilVista"})
-public class perfilVista extends HttpServlet {
+@WebServlet(name = "LecturaRevista", urlPatterns = {"/LecturaRevista"})
+public class LecturaRevista extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,30 +48,21 @@ public class perfilVista extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    Perfil perfilEscritor = new Perfil();
-    Usuario user = new Usuario();
-    Connection conexion = inicioSesion.conexion;
+    Connection con= inicioSesion.conexion;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String cuiEscritor = request.getParameter("cuiEscritor");
-        System.out.println("el parametro"+cuiEscritor);
-        if (cuiEscritor != null) {
-            System.out.println(cuiEscritor);
-            
-            request.setAttribute("perfilEscritor", perfilEscritor.VerPerfil(conexion, cuiEscritor, perfilEscritor));
-            request.setAttribute("nombreEscritor", user.ObtenerNombre(conexion, cuiEscritor));
-            getServletContext().getRequestDispatcher("/DocumentosWeb/perfil.jsp").forward(request, response);
-        }else{
-            System.out.println("cui es nulo ");
-        }
-        String valor = request.getParameter("imagen");
-        System.out.println(valor);
-        if("imagen".equals(valor)){
-           System.out.println("cui de obtener foto "+ cuiEscritor);
-            perfilEscritor.obtenerFoto(conexion, cuiEscritor, response);
+        processRequest(request, response);
+        if (request.getParameter("lectura") != null) {
+            int IdRevista = Integer.parseInt(request.getParameter("lectura"));
+            request.setAttribute("lectura", IdRevista);
+            System.out.println(IdRevista);
+            Revista miRevista = new Revista();
+            ArrayList<Revista> comentarios = miRevista.LeerComentarios(con, IdRevista);
+            request.setAttribute("leer", IdRevista);
+            request.setAttribute("Comentarios", comentarios);
+            getServletContext().getRequestDispatcher("/DocumentosWeb/leerRevista.jsp").forward(request, response);
         }
     }
 
@@ -87,6 +78,7 @@ public class perfilVista extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     /**

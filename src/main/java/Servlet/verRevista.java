@@ -7,6 +7,7 @@ package Servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,7 +47,7 @@ public class verRevista extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    Conection conexion = new Conection();
+    Connection conexion =inicioSesion.conexion;
     Usuario user = new Usuario();
     Revista revista = new Revista();
 
@@ -56,20 +57,22 @@ public class verRevista extends HttpServlet {
         String cui = (String)request.getSession().getAttribute("cui");
         ArrayList<Revista> revistas;
         if ("Editor".equals(request.getSession().getAttribute("rango"))) {
-            revistas = revista.ListarRevistasEditor(conexion.getConexion(), cui);
+            revistas = revista.ListarRevistasEditor(conexion, cui);
             request.setAttribute("revistas", revistas);
             request.setAttribute("titulo", "Mis Revistas Subidas");
             getServletContext().getRequestDispatcher("/DocumentosWeb/verRevistas.jsp").forward(request, response);
 
         } else if ("Suscriptor".equals(request.getSession().getAttribute("rango"))) {
             if ("todasLasRevistas".equals(request.getParameter("mis revistas"))) {
-                revistas = revista.ListarRevistas(conexion.getConexion());
+                revistas = revista.ListarRevistas(conexion, cui);
                 request.setAttribute("revistas", revistas);
                 request.setAttribute("titulo", "Todas las Revistas Disponibles");
+                request.setAttribute("suscrito", "no");
             } else if (request.getParameter("mis revistas").equals("misRevistas")) {
-                revistas = revista.ListarRevistas(conexion.getConexion());
+                revistas = revista.ListarRevistasSuscriptor(conexion, cui);
                 request.setAttribute("revistas", revistas);
                 request.setAttribute("titulo", "Todas Mis Suscripciones Disponibles");
+                request.setAttribute("suscrito", "si");
             }
             getServletContext().getRequestDispatcher("/DocumentosWeb/verRevistas.jsp").forward(request, response);
         }

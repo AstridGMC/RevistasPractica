@@ -10,18 +10,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href = "<%=request.getContextPath()%>/bootstrap/css/estiloInicio.css" rel="stylesheet" type ="text/css">
-        <title>JSP Page</title>
+        <title>Bienvenido Suscriptor</title>
     </head>
     <body style= " background-color: white">
-
-        <%
-            System.out.println("mi rango es " + session.getAttribute("rango"));
-            if ("Editor".equals(session.getAttribute("rango"))) {
-                System.out.println("se incluye rango " + session.getAttribute("rango"));%>
-        <%@include  file= "headerPrincipalEditor.jsp"%>
-        <% } else if ("Suscriptor".equals(session.getAttribute("rango"))) {%>
+        
         <%@include  file= "headerPrincipalSuscriptor.jsp"%>
-        <%            }
+                  }
             if (session.getAttribute("rango") == "Administrador") {
 
             }%>

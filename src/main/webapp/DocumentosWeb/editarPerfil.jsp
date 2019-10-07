@@ -21,13 +21,11 @@
         <%@include  file= "headerPrincipalEditor.jsp"%>
         <% } else if ("Suscriptor".equals(session.getAttribute("rango"))) {
             System.out.println("se incluye rango " + session.getAttribute("rango"));
-        
         %>
         <%@include  file= "headerPrincipalSuscriptor.jsp"%>
-        <% }
-            if (session.getAttribute("rango") == "Administrador") {
-
-            }%>
+        <% } else if (session.getAttribute("rango").equals("Administrador")){%>
+                <%@include  file= "headerAdministrador.jsp"%>
+            <%}%>
 
         <div id="seccion" class="contenido">
             <h4>Puedes editar tu perfil las veces que lo desees</h4>

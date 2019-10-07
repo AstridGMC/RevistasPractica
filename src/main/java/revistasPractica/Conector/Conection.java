@@ -23,7 +23,7 @@ public class Conection {
     
     
     
-    public static Connection conection(){
+    public static void conection(){
         try{
              Class.forName(classname);
             // Nos conectamos a la bd
@@ -34,17 +34,13 @@ public class Conection {
             if (conexion!=null){
                 //JOptionPane.showMessageDialog(null,"Conexion establecida");
                 System.out.println("coneccion establecida");
-                return conexion;
             }
-            return conexion;
         }
         // Si la conexion NO fue exitosa mostramos un mensaje de error
          catch (ClassNotFoundException e) {
              System.out.println("ha fallado la coneccion"+e);
-             return null;
         }catch(SQLException e){
              System.out.println("ha fallado "+e);
-             return null;
         }
     }
 
